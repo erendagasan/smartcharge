@@ -1,13 +1,12 @@
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dashboard from "../components/Dashboard";
-
+import axios from "axios";
 import Footer from "../components/Footer";
 import { getServerSession } from "next-auth";
 import authOptions from "../pages/api/auth/[...nextauth]";
 import { Inter } from "@next/font/google";
 const inter = Inter({ subsets: ["latin"] });
-const mqtt = require("mqtt");
 
 export async function getServerSideProps({ req, res }) {
   const session = await getServerSession(req, res, authOptions);
@@ -45,27 +44,20 @@ export async function getServerSideProps({ req, res }) {
 }
 
 function DashboardPage({ loggedUserData }) {
-  const brokerUrl = "mqtt://192.168.1.45:1883";
-  const topic = "/home/prodigytrip/Desktop";
+  const [mqttData, setMqttData] = useState("0");
 
-  let mqttData = 0;
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const response = await axios.get("http://localhost:3000/api/data");
+      const data = response.data;
+      setMqttData(data);
+      console.log(data);
+    }, 5000);
 
-  const client = mqtt.connect(brokerUrl);
-
-  client.on("connect", () => {
-    console.log("Connected to MQTT broker");
-    client.subscribe(topic);
-  });
-
-  client.on("message", (topic, message) => {
-    mqttData = Math.parseInt(message).toString();
-    console.log("gotcha")
-  });
-
-  client.on("error", (error) => {
-    console.error(`Error: ${error}`);
-  });
-
+    return () => {
+      clearInterval(interval); // Cleanup the interval on component unmount
+    };
+  }, []);
   return (
     <>
       <Head>

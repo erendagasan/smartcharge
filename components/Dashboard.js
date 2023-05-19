@@ -21,6 +21,8 @@ function Dashboard({ loggedUserData, mqttData }) {
   const router = useRouter();
   const [addDevice, setAddDevice] = useState(false);
   const [summaryState, setSummaryState] = useState("weekly");
+  const [voltage, setVoltage] = useState(0);
+
   return (
     <div
       className={` ${inter.className} [&::-webkit-scrollbar]:hidden h-[100vh] grid grid-cols-2 gap-2 w-full bg-black`}
@@ -79,13 +81,22 @@ function Dashboard({ loggedUserData, mqttData }) {
               <div className=" bg-[#ef4036] flex-1 p-4 flex justify-between">
                 <p className=" text-[#fff1d6] font-semibold">Anlık Akım</p>
 
-                <p className="text-3xl text-[#fff1d6]">{mqttData} A</p>
+                <p className="text-3xl text-[#fff1d6]">{mqttData.beat} A</p>
               </div>
 
-              <div className=" bg-[#ef4036] flex-1 p-4 flex justify-between">
+              <div
+                onClick={() => {
+                  if (voltage == 0) {
+                    setVoltage(230);
+                  } else if (voltage == 230) {
+                    setVoltage(0);
+                  }
+                }}
+                className=" bg-[#ef4036] flex-1 p-4 flex justify-between select-none"
+              >
                 <p className=" text-[#fff1d6] font-semibold">Anlık Gerilim</p>
 
-                <p className="text-3xl text-[#fff1d6]">220 V</p>
+                <p className="text-3xl text-[#fff1d6]">{voltage} V</p>
               </div>
             </div>
           </div>
