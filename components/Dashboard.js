@@ -81,7 +81,7 @@ function Dashboard({ loggedUserData, mqttData }) {
               <div className=" bg-[#ef4036] flex-1 p-4 flex justify-between">
                 <p className=" text-[#fff1d6] font-semibold">Anlık Akım</p>
 
-                <p className="text-3xl text-[#fff1d6]">{mqttData.beat} A</p>
+                <p className="text-3xl text-[#fff1d6]">{mqttData.i} A</p>
               </div>
 
               <div
